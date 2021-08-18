@@ -1,3 +1,4 @@
+import getVideoEndTiming from "./script.js";
 const body = document.querySelector("body");
 let textToSpeak = "유정아 공부해야지";
 
@@ -19,9 +20,12 @@ const getCurrentTab = async () => {
     active: true,
     currentWindow: true,
   });
-  chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    files: ["script.js"],
+  chrome.storage.sync.get("storageText", ({ storageText }) => {
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: getVideoEndTiming,
+      args: [storageText],
+    });
   });
 };
 
@@ -32,8 +36,6 @@ const getEditedText = () => {
     const editedText = event.target.value;
     chrome.storage.sync.set({ storageText: editedText });
     textToSpeak = editedText;
-    //background page로 보낸다
-    chrome.runtime.sendMessage({ textToSpeak });
   });
   getCurrentTab();
 };
@@ -47,8 +49,6 @@ const getStorageText = () => {
     } else {
       textarea.value = textToSpeak;
     }
-    //background page로 보낸다
-    chrome.runtime.sendMessage({ textToSpeak });
     getEditedText();
   });
 };

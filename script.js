@@ -2,30 +2,24 @@
 
 //textToSpeak ??
 
-const getVideoEndTiming = () => {
+const getVideoEndTiming = (storageText) => {
   const video = document.querySelector(".html5-main-video");
   const duration = video.duration;
 
   const callSpeechAPI = (currentTime) => {
-    const result = (currentTime / duration) * 100;
-    console.log(Math.round(result), currentTime, duration);
-    //isTrue ? 이걸 result로 보낸다?
+    const percent = Math.round((currentTime / duration) * 100);
 
-    // if (
-    //   Math.round(result) === 70 ||
-    //   Math.round(result) === 80 ||
-    //   Math.round(result) === 90
-    // ) {
-    //   isTrue = true;
-    //   console.log("heelo");
-    //   // chrome.storage.sync.get("storageText", ({ storageText }) => {
-    //   //   let utterance = new SpeechSynthesisUtterance(storageText);
-    //   //        speechSynthesis.speak(utterance);
-    //   //      });
-    //   // speechSynthesis.pause();
-    // } else {
-    //   isTrue = false;
-    // }
+    console.log(percent, storageText);
+    let utterance = new SpeechSynthesisUtterance(storageText);
+
+    if (percent === 70 || percent === 80 || percent === 90) {
+      console.log("hi");
+      alert(storageText);
+      speechSynthesis.speak(utterance);
+    } else if (percent === 99) {
+      alert(storageText);
+      video.pause();
+    }
   };
   const getCurrentTime = () => {
     const currentTime = video.currentTime;
@@ -34,7 +28,4 @@ const getVideoEndTiming = () => {
   };
   setInterval(getCurrentTime, 1000);
 };
-const init = () => {
-  getVideoEndTiming();
-};
-init();
+export default getVideoEndTiming;
